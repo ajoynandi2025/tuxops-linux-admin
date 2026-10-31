@@ -11,10 +11,145 @@ export const TOPIC_CATEGORIES = [
 ];
 
 export const TOPICS = [
-  // 01. Kernel Architecture
+  // 01. What is Linux System Administration? (GeeksforGeeks Comprehensive Guide)
+  {
+    id: "what-is-linux-system-administration",
+    topicNumber: "01",
+    title: "What is Linux System Administration? (Overview, Roles, Commands & Skills)",
+    category: "Foundations & Architecture",
+    difficulty: "Beginner",
+    readTime: "20 min read",
+    summary: "A complete introduction to Linux System Administration based on industry standards and GeeksforGeeks guidelines. Learn the administrator's core responsibilities, fundamental operating system concepts, essential day-to-day commands, key technical skills, and career paths.",
+    keyCommands: ["uname -r", "whoami", "id", "df -h", "top", "systemctl status"],
+    sections: [
+      {
+        id: "what-is-sysadmin",
+        heading: "1. What is Linux System Administration?",
+        content: `Linux System Administration involves managing, configuring, maintaining, and troubleshooting Linux-based operating systems to guarantee that servers, applications, and networks run smoothly, securely, and efficiently.
+
+A Linux System Administrator (often abbreviated as SysAdmin) acts as the custodian of the organization's computing infrastructure. Whether managing on-premise bare-metal servers or thousands of cloud instances in AWS, GCP, or Azure, the administrator oversees hardware resources, user access boundaries, software installations, automation scripts, and continuous security monitoring.`,
+        codeBlock: {
+          command: "hostnamectl && uname -a",
+          explanation: "Display system hostname, operating system release, kernel architecture, and virtualization runtime.",
+          output: ` Static hostname: production-node01
+       Icon name: computer-vm
+         Chassis: vm
+      Machine ID: d192847a192847192837192847192837
+         Boot ID: a819273c819273819273819273819273
+Operating System: Ubuntu 24.04 LTS
+          Kernel: Linux 6.8.0-31-generic
+    Architecture: x86-64`
+        }
+      },
+      {
+        id: "core-responsibilities",
+        heading: "2. Core Responsibilities of a Linux System Administrator",
+        content: `According to GeeksforGeeks and industry benchmarks, the daily responsibilities of a Linux administrator encompass five pillars:
+
+1. System Setup, Installation & Patching:
+Installing Linux distributions (Ubuntu, RHEL, Debian, Rocky, Alpine), keeping packages updated, applying kernel security patches, and configuring baseline server templates.
+
+2. User & Group Access Management:
+Creating, modifying, and deprovisioning user accounts, configuring supplemental groups, establishing password aging policies, and enforcing the Principle of Least Privilege via sudo delegations.
+
+3. File System & Storage Administration:
+Partitioning storage drives (fdisk, parted), creating Logical Volumes (LVM), managing filesystem formats (ext4, XFS, Btrfs), mounting disks via /etc/fstab, and monitoring disk capacity to avoid outages.
+
+4. Performance Monitoring & Resource Optimization:
+Continuously tracking CPU utilization, memory pressure, disk I/O latency, and network bandwidth using diagnostic utilities like top, htop, vmstat, iostat, and sar.
+
+5. Security Hardening, Firewalls & Backup Operations:
+Enforcing firewall security policies (UFW, Firewalld), managing SSH public key cryptography, auditing security logs, configuring automated backups with rsync, and formulating Disaster Recovery (DR) protocols.`,
+        tip: "A successful system administrator prioritizes automation over repetitive manual labor. If you execute a sequence of commands more than twice, write a shell script or Ansible playbook to automate it."
+      },
+      {
+        id: "fundamental-concepts",
+        heading: "3. Fundamental Concepts Every SysAdmin Must Understand",
+        content: `To effectively administer Linux servers, you must internalize these foundational concepts:
+
+• The Linux Kernel vs. User Space:
+The kernel manages physical hardware (CPU, RAM, storage controllers), while applications and users operate in isolated user space communicating with the kernel via system calls.
+
+• The Filesystem Hierarchy Standard (FHS):
+Everything in Linux is organized under a unified root directory ('/'). Configurations belong in /etc, dynamic data and logs belong in /var, user home folders in /home, and hardware devices are represented as files in /dev.
+
+• Managing the Superuser (root):
+The 'root' user (UID 0) has absolute power over the operating system, with the authority to read, modify, or delete any file on the system. To avoid catastrophic accidents or security breaches, administrators should log in as unprivileged users and invoke elevated permissions using 'sudo'.
+
+• Command-Line Interface (CLI) & Shell:
+The primary interface for enterprise Linux servers is the terminal. Linux administrators work almost exclusively without a graphical user interface (GUI) to maximize server performance and minimize resource overhead.`,
+        warning: "Never execute arbitrary commands from the internet using 'curl | sudo bash'. Always inspect scripts beforehand to verify they do not contain destructive operations or unauthorized user creation."
+      },
+      {
+        id: "essential-commands-guide",
+        heading: "4. Essential Linux Administration Command Reference",
+        content: `Linux system administrators rely on a standard set of command-line utilities:
+
+1. File & Directory Management:
+• 'ls -la' : List all files including hidden dotfiles with permissions and sizes.
+• 'cd /path' : Change current working directory.
+• 'pwd' : Print absolute path of current working directory.
+• 'mkdir -p /dir1/dir2' : Create nested directories recursively.
+• 'cp -r src/ dest/' : Copy files and directories recursively.
+• 'mv file new_name' : Move or rename files.
+• 'rm -rf /path' : Recursively force remove files and directories.
+• 'touch filename' : Create an empty file or update access timestamps.
+
+2. System Information & Identity:
+• 'whoami' : Display username of the active shell session.
+• 'id' : Print real and effective UID, primary GID, and supplemental groups.
+• 'uname -r' : Print kernel release string.
+• 'uptime' : Show system running duration, logged-in users, and 1, 5, 15 min load averages.
+
+3. Storage & Memory Inspection:
+• 'df -h' : Display filesystem disk usage in human-readable gigabytes/megabytes.
+• 'du -sh * | sort -h' : Calculate disk space consumed by files in the current folder.
+• 'free -h' : Display total, used, free, and available physical memory and swap.
+
+4. Process & Resource Supervision:
+• 'ps aux' : Generate a complete snapshot of all running processes.
+• 'top' / 'htop' : Interactive real-time process and CPU resource monitor.
+• 'kill -15 <PID>' : Gracefully terminate a process via SIGTERM.`,
+        codeBlock: {
+          command: "whoami && id && df -h / && free -h",
+          explanation: "Run a quick multi-command health and identity check on a Linux server.",
+          output: `sysadmin
+uid=1000(sysadmin) gid=1000(sysadmin) groups=1000(sysadmin),27(sudo),999(docker)
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda2       160G   38G  115G  25% /
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       4.1Gi       7.2Gi       128Mi       4.6Gi        11Gi
+Swap:          4.0Gi          0B       4.0Gi`
+        }
+      },
+      {
+        id: "key-skills-career",
+        heading: "5. Key Skills & Career Certifications",
+        content: `A career in Linux System Administration opens doors to DevOps Engineering, Site Reliability Engineering (SRE), and Cloud Architecture.
+
+Essential Technical Skills:
+• Bash Scripting: Writing robust automation scripts with error trapping ('set -euo pipefail').
+• Networking: Configuring static IPs, DNS resolvers, routing tables, and SSH tunneling.
+• Security & Auditing: Enforcing SELinux or AppArmor policies, configuring UFW/Firewalld, and auditing with auditd.
+• Version Control: Using Git to manage infrastructure configuration files.
+
+Industry Standard Certifications:
+• Red Hat Certified System Administrator (RHCSA - EX200): The premier hands-on performance exam for enterprise Linux environments.
+• Linux Foundation Certified System Administrator (LFCS): A distribution-flexible practical exam covering storage, services, and networking.
+• CompTIA Linux+: Vendor-neutral certification establishing foundational Linux competence.`
+      }
+    ],
+    summaryChecklist: [
+      "Linux System Administration is the management, configuration, and security of Linux operating systems.",
+      "Key duties include provisioning, user permissions, storage management, monitoring, and security patching.",
+      "Administrators operate primarily through the Bash command-line interface (CLI).",
+      "Industry certifications like RHCSA and LFCS validate hands-on production administration competence."
+    ]
+  },
+  // 02. Kernel Architecture
   {
     id: "kernel-architecture",
-    topicNumber: "01",
+    topicNumber: "02",
     title: "Linux Kernel Architecture, Rings & System Calls",
     category: "Foundations & Architecture",
     difficulty: "Beginner",
@@ -86,10 +221,10 @@ xfs                  2166784  3`
     ]
   },
 
-  // 02. Boot Process
+  // 03. Boot Process
   {
     id: "boot-process",
-    topicNumber: "02",
+    topicNumber: "03",
     title: "The 4-Stage Linux Boot Sequence: UEFI/BIOS to systemd",
     category: "Foundations & Architecture",
     difficulty: "Beginner",
@@ -151,10 +286,10 @@ multi-user.target reached after 4.790s in userspace
     ]
   },
 
-  // 03. Filesystem Hierarchy Standard
+  // 04. Filesystem Hierarchy Standard
   {
     id: "filesystem-hierarchy",
-    topicNumber: "03",
+    topicNumber: "04",
     title: "Filesystem Hierarchy Standard (FHS): Deep Dive into /etc, /var, /proc & /sys",
     category: "Foundations & Architecture",
     difficulty: "Beginner",
@@ -210,10 +345,10 @@ drwxrwxrwt  18 root root  4096 Oct 31 14:30 /tmp`
     ]
   },
 
-  // 04. Shell Environment
+  // 05. Shell Environment
   {
     id: "shell-environment",
-    topicNumber: "04",
+    topicNumber: "05",
     title: "Bash Shell Environment, Variables, Dotfiles & Redirection",
     category: "Foundations & Architecture",
     difficulty: "Beginner",
@@ -277,10 +412,10 @@ Mastering redirection operators:
     ]
   },
 
-  // 05. User & Group Management
+  // 06. User & Group Management
   {
     id: "user-management",
-    topicNumber: "05",
+    topicNumber: "06",
     title: "User & Group Administration, /etc/passwd & Account Aging",
     category: "Users & Permissions",
     difficulty: "Beginner",
@@ -347,10 +482,10 @@ Number of days of warning before password expires       : 7`
     ]
   },
 
-  // 06. Permissions & ACLs
+  // 07. Permissions & ACLs
   {
     id: "permissions-acls",
-    topicNumber: "06",
+    topicNumber: "07",
     title: "POSIX Permissions (Octal & Symbolic), SUID, SGID & POSIX ACLs",
     category: "Users & Permissions",
     difficulty: "Beginner",
@@ -416,10 +551,10 @@ other::---`
     ]
   },
 
-  // 07. Sudo & PAM
+  // 08. Sudo & PAM
   {
     id: "sudo-pam",
-    topicNumber: "07",
+    topicNumber: "08",
     title: "Sudo Security, visudo, Rule Syntax & PAM Authentication",
     category: "Users & Permissions",
     difficulty: "Intermediate",
@@ -477,10 +612,10 @@ auth       required   pam_unix.so nullok
     ]
   },
 
-  // 08. Disk Partitioning
+  // 09. Disk Partitioning
   {
     id: "disk-partitioning",
-    topicNumber: "08",
+    topicNumber: "09",
     title: "Disk Partitioning: MBR vs. GPT, fdisk, parted & Block Devices",
     category: "Storage & Filesystems",
     difficulty: "Intermediate",
@@ -548,10 +683,10 @@ Number  Start   End     Size    File system  Name     Flags
     ]
   },
 
-  // 09. LVM Volume Management
+  // 10. LVM Volume Management
   {
     id: "lvm-storage",
-    topicNumber: "09",
+    topicNumber: "10",
     title: "Logical Volume Manager (LVM): Physical Volumes, Volume Groups & Online Sizing",
     category: "Storage & Filesystems",
     difficulty: "Intermediate",
@@ -627,10 +762,10 @@ data blocks changed from 65536000 to 78643200`
     ]
   },
 
-  // 10. Filesystems & /etc/fstab
+  // 11. Filesystems & /etc/fstab
   {
     id: "filesystems-fstab",
-    topicNumber: "10",
+    topicNumber: "11",
     title: "Linux Filesystems: ext4 vs. XFS vs. Btrfs, Mounting & /etc/fstab Options",
     category: "Storage & Filesystems",
     difficulty: "Intermediate",
@@ -693,10 +828,10 @@ ALWAYS run 'mount -a' immediately after saving changes to /etc/fstab. The 'mount
     ]
   },
 
-  // 11. Swap & Memory Management
+  // 12. Swap & Memory Management
   {
     id: "swap-memory",
-    topicNumber: "11",
+    topicNumber: "12",
     title: "Swap Space Creation, Swappiness Tuning & Virtual Memory Management",
     category: "Storage & Filesystems",
     difficulty: "Intermediate",
@@ -752,10 +887,10 @@ no label, UUID=8812c8a1-9a12-4f11-8812-a1827cb1829a`
     ]
   },
 
-  // 12. Process Management & Signals
+  // 13. Process Management & Signals
   {
     id: "process-management",
-    topicNumber: "12",
+    topicNumber: "13",
     title: "Linux Process Lifecycle, States (R, S, D, Z), Priorities & Signals",
     category: "Processes & Systemd",
     difficulty: "Intermediate",
@@ -819,10 +954,10 @@ no label, UUID=8812c8a1-9a12-4f11-8812-a1827cb1829a`
     ]
   },
 
-  // 13. Systemd Services
+  // 14. Systemd Services
   {
     id: "systemd-services",
-    topicNumber: "13",
+    topicNumber: "14",
     title: "Systemd Service Units: Writing Custom Services, Sandboxing & Dependencies",
     category: "Processes & Systemd",
     difficulty: "Intermediate",
@@ -911,10 +1046,10 @@ lrwxrwxrwx 1 root root 9 Oct 31 12:00 /etc/systemd/system/telnet.service -> /dev
     ]
   },
 
-  // 14. Cron & Timers
+  // 15. Cron & Timers
   {
     id: "cron-systemd-timers",
-    topicNumber: "14",
+    topicNumber: "15",
     title: "Task Scheduling: Crontab Syntax, Anacron & Modern Systemd Timers",
     category: "Processes & Systemd",
     difficulty: "Intermediate",
@@ -979,10 +1114,10 @@ Fri 2026-11-01 06:24:00 UTC 14h left   Thu 2026-10-31 06:12:10 UTC 9h ago    apt
     ]
   },
 
-  // 15. Systemd Journal & Logging
+  // 16. Systemd Journal & Logging
   {
     id: "systemd-journal",
-    topicNumber: "15",
+    topicNumber: "16",
     title: "Systemd Journal: journalctl Filtering, Boot Logs, Vacuuming & Syslog",
     category: "Logging & Auditing",
     difficulty: "Intermediate",
@@ -1042,10 +1177,10 @@ Vacuuming done, freed 1.3GB of archived journals from /var/log/journal/ec2b1...`
     ]
   },
 
-  // 16. Logrotate & Auditd
+  // 17. Logrotate & Auditd
   {
     id: "logrotate-auditd",
-    topicNumber: "16",
+    topicNumber: "17",
     title: "Log Rotation (logrotate) & Linux Auditing Framework (auditd)",
     category: "Logging & Auditing",
     difficulty: "Intermediate",
@@ -1110,10 +1245,10 @@ The 'logrotate' utility runs daily via cron or systemd timer. It reads master co
     ]
   },
 
-  // 17. Networking & iproute2
+  // 18. Networking & iproute2
   {
     id: "networking-iproute2",
-    topicNumber: "17",
+    topicNumber: "18",
     title: "Modern Network Configuration: ip, ss, Routing & DNS Resolution",
     category: "Networking & Firewalls",
     difficulty: "Intermediate",
@@ -1180,10 +1315,10 @@ tcp   LISTEN 0      511          0.0.0.0:443       0.0.0.0:*    users:(("nginx",
     ]
   },
 
-  // 18. SSH Hardening
+  // 19. SSH Hardening
   {
     id: "ssh-hardening",
-    topicNumber: "18",
+    topicNumber: "19",
     title: "OpenSSH Server Hardening: ED25519 Keys, Port Security & Config Directives",
     category: "Networking & Firewalls",
     difficulty: "Intermediate",
@@ -1248,10 +1383,10 @@ SHA256:7uK8Y9xWqVp0Zb12LkJ398hGyTx4mOPQr6s5tUvxw1Y admin@infrastructure`
     ]
   },
 
-  // 19. Firewalls: UFW & Firewalld
+  // 20. Firewalls: UFW & Firewalld
   {
     id: "firewalls-ufw-firewalld",
-    topicNumber: "19",
+    topicNumber: "20",
     title: "Linux Firewalls: UFW, Firewalld & nftables Packet Filtering",
     category: "Networking & Firewalls",
     difficulty: "Intermediate",
@@ -1313,10 +1448,10 @@ success`
     ]
   },
 
-  // 20. Package Management: APT & DNF
+  // 21. Package Management: APT & DNF
   {
     id: "package-management-apt-dnf",
-    topicNumber: "20",
+    topicNumber: "21",
     title: "Package Management: APT/dpkg vs. DNF/RPM vs. Pacman",
     category: "Package Management",
     difficulty: "Beginner",
@@ -1376,10 +1511,10 @@ Filename    : /usr/bin/iostat`
     ]
   },
 
-  // 21. Compiling from Source
+  // 22. Compiling from Source
   {
     id: "compiling-from-source",
-    topicNumber: "21",
+    topicNumber: "22",
     title: "Building Software from Source: GNU Toolchain, make, gcc & Shared Libraries",
     category: "Package Management",
     difficulty: "Advanced",
@@ -1429,10 +1564,10 @@ Copies compiled binaries, man pages, and headers to standard destinations (/usr/
     ]
   },
 
-  // 22. SELinux Mandatory Access Control
+  // 23. SELinux Mandatory Access Control
   {
     id: "selinux-mac",
-    topicNumber: "22",
+    topicNumber: "23",
     title: "SELinux Mandatory Access Control: Contexts, Booleans & Troubleshooting",
     category: "Security & Disaster Recovery",
     difficulty: "Advanced",
@@ -1496,10 +1631,10 @@ allow_httpd_anon_write, httpd_can_network_connect`
     ]
   },
 
-  // 23. Kernel Hardening & sysctl
+  // 24. Kernel Hardening & sysctl
   {
     id: "kernel-hardening-sysctl",
-    topicNumber: "23",
+    topicNumber: "24",
     title: "Linux Kernel Hardening via /etc/sysctl.conf & Security Parameters",
     category: "Security & Disaster Recovery",
     difficulty: "Advanced",
@@ -1548,10 +1683,10 @@ kernel.randomize_va_space = 2`
     ]
   },
 
-  // 24. Performance Monitoring & Triage
+  // 25. Performance Monitoring & Triage
   {
     id: "performance-tuning-use",
-    topicNumber: "24",
+    topicNumber: "25",
     title: "Performance Monitoring & Triage: CPU, Memory, Disk I/O & Load Averages",
     category: "Security & Disaster Recovery",
     difficulty: "Advanced",
@@ -1605,10 +1740,10 @@ How to interpret Load Average:
     ]
   },
 
-  // 25. Disaster Recovery & Chroot
+  // 26. Disaster Recovery & Chroot
   {
     id: "disaster-recovery-chroot",
-    topicNumber: "25",
+    topicNumber: "26",
     title: "Disaster Recovery & Rescue Mode: Fixing Broken Bootloaders & Chroot",
     category: "Security & Disaster Recovery",
     difficulty: "Advanced",
