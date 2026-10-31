@@ -2,140 +2,87 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
-import TutorialsPage from './pages/TutorialsPage';
-import TerminalModal from './components/TerminalModal';
-import CheatSheetModal from './components/CheatSheetModal';
-import QuizModal from './components/QuizModal';
+import TopicDetailPage from './pages/TopicDetailPage';
+import { TOPICS } from './data/topicsData';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState(() => {
-    // Check url hash or parameter
-    if (window.location.hash.length > 1) {
-      return 'tutorials';
+  const [currentRoute, setCurrentRoute] = useState(() => {
+    const hash = window.location.hash;
+    if (hash.startsWith("#topic/")) {
+      const topicId = hash.replace("#topic/", "");
+      if (TOPICS.some(t => t.id === topicId)) {
+        return { view: 'topic', topicId };
+      }
     }
-    return 'home';
+    return { view: 'home', topicId: null };
   });
 
-  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
-  const [terminalInitialCommand, setTerminalInitialCommand] = useState("");
-  const [isCheatSheetOpen, setIsCheatSheetOpen] = useState(false);
-  const [isQuizOpen, setIsQuizOpen] = useState(false);
-  const [activeToolTab, setActiveToolTab] = useState('chmod');
-
-  // Load completed modules from LocalStorage
-  const [completedModules, setCompletedModules] = useState(() => {
-    try {
-      const saved = localStorage.getItem('tuxops_completed_modules');
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
-
-  // Save to LocalStorage whenever completedModules updates
+  // Listen to browser Back/Forward navigation
   useEffect(() => {
-    try {
-      localStorage.setItem('tuxops_completed_modules', JSON.stringify(completedModules));
-    } catch (e) {
-      console.error("Failed to save progress", e);
-    }
-  }, [completedModules]);
-
-  const toggleModuleCompleted = (moduleId) => {
-    setCompletedModules(prev => ({
-      ...prev,
-      [moduleId]: !prev[moduleId]
-    }));
-  };
-
-  const handleOpenTerminalWithCommand = (cmd) => {
-    setTerminalInitialCommand(cmd);
-    setIsTerminalOpen(true);
-  };
-
-  const handleSelectTool = (toolName) => {
-    setActiveToolTab(toolName);
-    const element = document.getElementById("sysadmin-tools");
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  // Keyboard shortcut listener for Ctrl+K
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        setIsCheatSheetOpen(prev => !prev);
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash.startsWith("#topic/")) {
+        const topicId = hash.replace("#topic/", "");
+        if (TOPICS.some(t => t.id === topicId)) {
+          setCurrentRoute({ view: 'topic', topicId });
+          return;
+        }
       }
-      if (e.key === 'Escape') {
-        setIsTerminalOpen(false);
-        setIsCheatSheetOpen(false);
-        setIsQuizOpen(false);
-      }
+      setCurrentRoute({ view: 'home', topicId: null });
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  const handleNavigateHome = () => {
+    window.location.hash = "";
+    setCurrentRoute({ view: 'home', topicId: null });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectTopic = (topicId) => {
+    window.location.hash = `topic/${topicId}`;
+    setCurrentRoute({ view: 'topic', topicId });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Find active topic and adjacent topics
+  const currentTopicIndex = TOPICS.findIndex(t => t.id === currentRoute.topicId);
+  const activeTopic = currentTopicIndex !== -1 ? TOPICS[currentTopicIndex] : null;
+  const prevTopic = currentTopicIndex > 0 ? TOPICS[currentTopicIndex - 1] : null;
+  const nextTopic = currentTopicIndex < TOPICS.length - 1 ? TOPICS[currentTopicIndex + 1] : null;
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0a0d14] text-slate-100 selection:bg-emerald-500 selection:text-black">
-      {/* Top Navigation */}
+      {/* Top Navbar */}
       <Navbar
-        currentView={currentView}
-        setCurrentView={setCurrentView}
-        onOpenTerminal={(cmd) => handleOpenTerminalWithCommand(cmd)}
-        onOpenCheatSheet={() => setIsCheatSheetOpen(true)}
-        onOpenQuiz={() => setIsQuizOpen(true)}
-        onSelectTool={handleSelectTool}
+        currentView={currentRoute.view}
+        onNavigateHome={handleNavigateHome}
+        onSelectTopic={handleSelectTopic}
       />
 
-      {/* Main View Router */}
+      {/* Main Page Content */}
       <main className="flex-1">
-        {currentView === 'home' ? (
-          <HomePage
-            setCurrentView={setCurrentView}
-            onOpenTerminalWithCommand={handleOpenTerminalWithCommand}
-            onOpenCheatSheet={() => setIsCheatSheetOpen(true)}
-            onOpenQuiz={() => setIsQuizOpen(true)}
-            activeToolTab={activeToolTab}
-            setActiveToolTab={setActiveToolTab}
-            completedModules={completedModules}
+        {currentRoute.view === 'topic' && activeTopic ? (
+          <TopicDetailPage
+            topic={activeTopic}
+            onNavigateHome={handleNavigateHome}
+            onNavigateTopic={handleSelectTopic}
+            prevTopic={prevTopic}
+            nextTopic={nextTopic}
           />
         ) : (
-          <TutorialsPage
-            onOpenTerminalWithCommand={handleOpenTerminalWithCommand}
-            completedModules={completedModules}
-            toggleModuleCompleted={toggleModuleCompleted}
+          <HomePage
+            onSelectTopic={handleSelectTopic}
           />
         )}
       </main>
 
-      {/* Global Footer */}
+      {/* Footer */}
       <Footer
-        setCurrentView={setCurrentView}
-        onOpenCheatSheet={() => setIsCheatSheetOpen(true)}
-        onOpenTerminal={(cmd) => handleOpenTerminalWithCommand(cmd)}
-        onOpenQuiz={() => setIsQuizOpen(true)}
-      />
-
-      {/* Interactive Terminal Modal Drawer */}
-      <TerminalModal
-        isOpen={isTerminalOpen}
-        onClose={() => setIsTerminalOpen(false)}
-        initialCommand={terminalInitialCommand}
-      />
-
-      {/* Quick Cheat Sheet Modal */}
-      <CheatSheetModal
-        isOpen={isCheatSheetOpen}
-        onClose={() => setIsCheatSheetOpen(false)}
-      />
-
-      {/* Certification Quiz Modal */}
-      <QuizModal
-        isOpen={isQuizOpen}
-        onClose={() => setIsQuizOpen(false)}
+        onSelectTopic={handleSelectTopic}
+        onNavigateHome={handleNavigateHome}
       />
     </div>
   );
